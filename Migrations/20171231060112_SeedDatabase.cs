@@ -34,7 +34,7 @@ namespace CarDealer.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DELETE FROM CarDealer.Makes;");
+            migrationBuilder.Sql("DELETE FROM CarDealer.Makes WHERE Name IN ('Tesla', 'BMW', 'Honda');");
             // There is no need to delete from Models since the FK and cascade option.
         }
     }
