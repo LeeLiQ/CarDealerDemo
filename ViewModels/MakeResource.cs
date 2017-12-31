@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 
 namespace CarDealer.ViewModels
 {
-    public class MakeResources
+    public class MakeResource
     {
-        public MakeResources() => Models = new Collection<ModelResource>();
+        public MakeResource() => Models = new Collection<ModelResource>();
 
         public int Id { get; set; }
 
