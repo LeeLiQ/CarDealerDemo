@@ -10,6 +10,7 @@ namespace CarDealer.AutoMapperMapping
         {
             CreateMap<Make, MakeResource>();
             CreateMap<Model, ModelResource>();
+            CreateMap<Feature, FeatureResource>();
         }
     }
 }
