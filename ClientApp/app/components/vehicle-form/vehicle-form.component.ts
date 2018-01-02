@@ -10,14 +10,20 @@ import 'rxjs'
 export class VehicleFormComponent implements OnInit {
 
   makes: any[];
+  models: any[];
+  vehicle: any = { make: '' };
 
   constructor(private makeService: MakeService) { }
 
   ngOnInit() {
     this.makeService.getMakes().subscribe(makes => {
       this.makes = makes;
-      console.log(this.makes);
     })
+  }
+
+  onMakeChange() {
+    const selectedMake = this.makes.find(m => m.id == this.vehicle.make);
+    this.models = selectedMake ? selectedMake.models : [];
   }
 
 }
