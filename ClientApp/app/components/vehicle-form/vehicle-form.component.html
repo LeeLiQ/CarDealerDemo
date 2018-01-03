@@ -20,6 +20,17 @@
     </select>
   </div>
 
+  <p>Is this vehicle registered?</p>
+
+  <label for="registered" class="radio-inline">
+    <input type="radio" id="registered" value="true" name="isRegistered"> Yes
+  </label>
+
+  <label for="notRegistered" class="radio-inline">
+    <input type="radio" id="notRegistered" value="false" name="isRegistered"> No
+  </label>
+
+
   <h2>Features</h2>
   <div class="checkbox" *ngFor="let feature of features">
     <label for="feature{{feature.id}}">
