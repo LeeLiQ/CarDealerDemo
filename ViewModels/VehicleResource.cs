@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using CarDealer.Models;
 
 namespace CarDealer.ViewModels
@@ -12,6 +13,7 @@ namespace CarDealer.ViewModels
 
         public bool IsRegistered { get; set; }
 
+        [Required]
         public ContactResource Contact { get; set; }
 
         public ICollection<int> Features { get; set; }
