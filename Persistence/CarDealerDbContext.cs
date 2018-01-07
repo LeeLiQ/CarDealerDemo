@@ -10,6 +10,8 @@ namespace CarDealer.Persistence
 
         public DbSet<Feature> Features { get; set; }
 
+        public DbSet<Vehicle> Vehicles { get; set; }
+
         public CarDealerDbContext(DbContextOptions<CarDealerDbContext> options)
                 : base(options)
         {
