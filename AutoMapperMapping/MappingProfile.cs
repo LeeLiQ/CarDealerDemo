@@ -42,12 +42,12 @@ namespace CarDealer.AutoMapperMapping
                 .AfterMap((src, tar) =>
                 {
                     //remove unselected features
-                    var removedFeatures = tar.Features.Where(f => !src.Features.Contains(f.FeatureId));
+                    var removedFeatures = tar.Features.Where(f => !src.Features.Contains(f.FeatureId)).ToList();
                     foreach (var f in removedFeatures)
                         tar.Features.Remove(f);
 
                     // add new features
-                    var addedFeatures = src.Features.Where(id => !tar.Features.Any(f => f.FeatureId == id)).Select(id => new VehicleFeature { FeatureId = id });
+                    var addedFeatures = src.Features.Where(id => !tar.Features.Any(f => f.FeatureId == id)).Select(id => new VehicleFeature { FeatureId = id }).ToList();
                     foreach (var f in addedFeatures)
                         tar.Features.Add(f);
                 });
