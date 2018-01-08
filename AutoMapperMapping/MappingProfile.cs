@@ -27,6 +27,7 @@ namespace CarDealer.AutoMapperMapping
 
             //API Resource to Domain
             CreateMap<VehicleResource, Vehicle>()
+                .ForMember(destination => destination.Id, operation => operation.Ignore())
                 .ForMember(destination => destination.ContactName,
                             operation => operation.MapFrom(source => source.Contact.Name))
                 .ForMember(destination => destination.ContactEmail,
