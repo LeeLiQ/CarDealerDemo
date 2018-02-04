@@ -13,7 +13,7 @@ namespace CarDealer.AutoMapperMapping
             CreateMap<Make, MakeResource>();
             CreateMap<Model, ModelResource>();
             CreateMap<Feature, FeatureResource>();
-            CreateMap<Vehicle, VehicleResource>()
+            CreateMap<Vehicle, SaveVehicleResource>()
                 .ForMember(destination => destination.Contact,
                             opt => opt.MapFrom(source =>
                                   new ContactResource
@@ -24,9 +24,21 @@ namespace CarDealer.AutoMapperMapping
                                   }))
                 .ForMember(destination => destination.Features,
                             opt => opt.MapFrom(source => source.Features.Select(t => t.FeatureId)));
+            CreateMap<Vehicle, VehicleResource>()
+                .ForMember(destination => destination.Contact,
+                                opt => opt.MapFrom(source =>
+                                    new ContactResource
+                                    {
+                                        Name = source.ContactName,
+                                        Phone = source.ContactPhone,
+                                        Email = source.ContactEmail
+                                    }))
+                .ForMember(destination => destination.Make, opt => opt.MapFrom(source => source.Model.Make))
+                .ForMember(destination => destination.Features,
+                                opt => opt.MapFrom(source => source.Features.Select(t => new FeatureResource { Id = t.Feature.Id, Name = t.Feature.Name })));
 
             //API Resource to Domain
-            CreateMap<VehicleResource, Vehicle>()
+            CreateMap<SaveVehicleResource, Vehicle>()
                 .ForMember(destination => destination.Id, operation => operation.Ignore())
                 .ForMember(destination => destination.ContactName,
                             operation => operation.MapFrom(source => source.Contact.Name))
