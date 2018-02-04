@@ -11,6 +11,7 @@ namespace CarDealer.AutoMapperMapping
         {
             // Domain to API Resource
             CreateMap<Make, MakeResource>();
+            // This is from the video. However, my program can be executed without any problem if I didn't add the following line.
             CreateMap<Make, KeyValuePairResource>();
             CreateMap<Model, KeyValuePairResource>();
             CreateMap<Feature, KeyValuePairResource>();
