@@ -14,12 +14,14 @@ namespace CarDealer.Controllers
     public class VehiclesController : Controller
     {
         private readonly IMapper mapper;
-        private readonly CarDealerDbContext context;
         private readonly IVehicleRepository repository;
-        public VehiclesController(IMapper mapper, CarDealerDbContext context, IVehicleRepository repository)
+
+        private readonly CarDealerDbContext context;
+
+        public VehiclesController(IMapper mapper, IVehicleRepository repository, CarDealerDbContext context)
         {
-            this.repository = repository;
             this.context = context;
+            this.repository = repository;
             this.mapper = mapper;
         }
 
@@ -46,7 +48,7 @@ namespace CarDealer.Controllers
             var vehicle = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
 
             vehicle.LastUpdate = DateTime.UtcNow;
-            context.Vehicles.Add(vehicle);
+            repository.Add(vehicle);
             await context.SaveChangesAsync();
 
             vehicle = await repository.GetVehicle(vehicle.Id);
@@ -81,12 +83,12 @@ namespace CarDealer.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
-            var vehicle = await context.Vehicles.FindAsync(id);
+            var vehicle = await repository.GetVehicle(id, includeRelated: false);
 
             if (vehicle == null)
                 return NotFound();
 
-            context.Vehicles.Remove(vehicle);
+            repository.Remove(vehicle);
             await context.SaveChangesAsync();
             return Ok(id);
         }
