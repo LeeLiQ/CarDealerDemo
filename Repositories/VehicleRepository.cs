@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarDealer.Repositories
 {
-    public class VehicleRepository
+    public class VehicleRepository : IVehicleRepository
     {
         private readonly CarDealerDbContext context;
         public VehicleRepository(CarDealerDbContext context)

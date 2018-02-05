@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CarDealer.Models;
 using CarDealer.Persistence;
+using CarDealer.Repositories;
 using CarDealer.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,12 @@ namespace CarDealer.Controllers
     {
         private readonly IMapper mapper;
         private readonly CarDealerDbContext context;
-        public VehiclesController(IMapper mapper, CarDealerDbContext context)
+        private readonly IVehicleRepository repository;
+        public VehiclesController(IMapper mapper, CarDealerDbContext context, IVehicleRepository repository)
         {
+            this.repository = repository;
             this.context = context;
             this.mapper = mapper;
-
         }
 
         [HttpPost]
@@ -47,12 +49,7 @@ namespace CarDealer.Controllers
             context.Vehicles.Add(vehicle);
             await context.SaveChangesAsync();
 
-            vehicle = await context.Vehicles
-                            .Include(v => v.Features)
-                                .ThenInclude(v => v.Feature)
-                            .Include(v => v.Model)
-                                .ThenInclude(m => m.Make)
-                            .SingleOrDefaultAsync(v => v.Id == vehicle.Id);
+            vehicle = await repository.GetVehicle(vehicle.Id);
 
             var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
 
@@ -65,12 +62,7 @@ namespace CarDealer.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var vehicle = await context.Vehicles
-                            .Include(v => v.Features)
-                                .ThenInclude(v => v.Feature)
-                            .Include(v => v.Model)
-                                .ThenInclude(m => m.Make)
-                            .SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await repository.GetVehicle(id);
 
             if (vehicle == null)
                 return NotFound();
@@ -102,12 +94,7 @@ namespace CarDealer.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var vehicle = await context.Vehicles
-                            .Include(v => v.Features)
-                                .ThenInclude(v => v.Feature)
-                            .Include(v => v.Model)
-                                .ThenInclude(m => m.Make)
-                            .SingleOrDefaultAsync(v => v.Id == id);
+            var vehicle = await repository.GetVehicle(id);
             if (vehicle == null)
                 return NotFound();
             var vehicleResource = mapper.Map<Vehicle, VehicleResource>(vehicle);

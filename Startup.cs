@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CarDealer.Persistence;
+using CarDealer.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -28,6 +29,8 @@ namespace CarDealer
             services.AddAutoMapper();
             services.AddDbContext<CarDealerDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("MySqiConnectionString")));
             services.AddMvc();
+
+            services.AddScoped<IVehicleRepository, VehicleRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
