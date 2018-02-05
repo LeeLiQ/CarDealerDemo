@@ -15,12 +15,11 @@ namespace CarDealer.Controllers
     {
         private readonly IMapper mapper;
         private readonly IVehicleRepository repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        private readonly CarDealerDbContext context;
-
-        public VehiclesController(IMapper mapper, IVehicleRepository repository, CarDealerDbContext context)
+        public VehiclesController(IMapper mapper, IVehicleRepository repository, IUnitOfWork unitOfWork)
         {
-            this.context = context;
+            this.unitOfWork = unitOfWork;
             this.repository = repository;
             this.mapper = mapper;
         }
@@ -38,18 +37,18 @@ namespace CarDealer.Controllers
                 if we are sure this kind of FK violation won't happen, we can ignore it. 
                 If hacker comes in, they can only see 500 error without details
             */
-            var model = await context.Models.FindAsync(vehicleResource.ModelId);
-            if (model == null)
-            {
-                ModelState.AddModelError("ModelId", @"We can't find this model.");
-                return BadRequest(ModelState);
-            }
+            // var model = await context.Models.FindAsync(vehicleResource.ModelId);
+            // if (model == null)
+            // {
+            //     ModelState.AddModelError("ModelId", @"We can't find this model.");
+            //     return BadRequest(ModelState);
+            // }
 
             var vehicle = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
 
             vehicle.LastUpdate = DateTime.UtcNow;
             repository.Add(vehicle);
-            await context.SaveChangesAsync();
+            await unitOfWork.CompleteAsync();
 
             vehicle = await repository.GetVehicle(vehicle.Id);
 
@@ -73,7 +72,7 @@ namespace CarDealer.Controllers
 
             vehicle.LastUpdate = DateTime.UtcNow;
 
-            await context.SaveChangesAsync();
+            await unitOfWork.CompleteAsync();
 
             var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
 
@@ -89,7 +88,7 @@ namespace CarDealer.Controllers
                 return NotFound();
 
             repository.Remove(vehicle);
-            await context.SaveChangesAsync();
+            await unitOfWork.CompleteAsync();
             return Ok(id);
         }
 
